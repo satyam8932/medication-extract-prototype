@@ -1,2 +1,2 @@
-const apiURL = 'https://meidcs-backend.vercel.app';
+const apiURL = 'https://medics-backend.vercel.app';
 export default apiURL;
