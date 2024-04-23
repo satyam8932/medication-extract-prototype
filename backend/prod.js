@@ -23,8 +23,9 @@ const upload = multer({ storage: storage });
 // Defining a route to serve the HTML template
 app.get('/', (req, res) => {
     // Serve the HTML file located in the 'public' directory
-    res.sendFile(path.join(__dirname, 'public', 'test.html'));
+    res.json({ message: "This is the backend of Medics.js" });
 });
+
 
 // Route for handling image uploads using multer
 app.post('/api/vision', upload.single('image'), async (req, res) => {
