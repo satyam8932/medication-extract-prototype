@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Uploader</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body{
+      margin: 1rem;
+      padding: 1rem;
+    }
+    #loading {
+      display: none;
+    }
+    #camera-stream {
+      display: none;
+    }
+    #camera-capture-btn {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <div class="container mx-auto py-8">
+    <h1 class="text-3xl font-bold mb-4">Image Uploader</h1>
+    <div class="flex flex-col justify-center items-center">
+      <div class="mb-4 w-full">
+        <label for="file-upload" class="block mb-2 font-bold text-gray-700">Upload File</label>
+        <input type="file" id="file-upload" class="border border-gray-400 rounded-md p-2 w-full" accept="image/*" />
+        <button id="file-upload-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-2 w-full">Upload</button>
+      </div>
+      <div class="w-full">
+        <label for="camera-upload" class="block mb-2 font-bold text-gray-700">Take Photo</label>
+        <button id="camera-open-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full">Take Photo</button>
+        <video id="camera-stream" class="border border-gray-400 rounded-md mb-2 w-full mt-2" style="height: 50vh;" autoplay></video>
+        <button id="camera-capture-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full">Capture</button>
+      </div>
+    </div>
+    <div id="loading" class="flex justify-center items-center mt-4">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+    </div>
+    <div id="response-container" class="mt-4 bg-white p-4 rounded-md shadow"></div>
+  </div>
+
+  <script>
+    const fileUploadBtn = document.getElementById('file-upload-btn');
+    const cameraOpenBtn = document.getElementById('camera-open-btn');
+    const cameraUploadBtn = document.getElementById('camera-capture-btn');
+    const cameraStream = document.getElementById('camera-stream');
+    const responseContainer = document.getElementById('response-container');
+    const loadingIndicator = document.getElementById('loading');
+
+    // File upload
+    fileUploadBtn.addEventListener('click', () => {
+      const fileInput = document.getElementById('file-upload');
+      const file = fileInput.files[0];
+      if (file) {
+        // const uniqueFileName = generateUniqueFileName(file.name);
+        // const modifiedFile = new File([file], uniqueFileName, { type: file.type });
+        uploadImage(file);
+      }
+    });
+
+    // Function to open the rear camera
+    function openRearCamera() {
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }) // Specify facingMode as 'environment' for the rear camera
+        .then(stream => {
+          cameraStream.srcObject = stream;
+          cameraStream.style.display = 'block';
+          cameraUploadBtn.style.display = 'block';
+          cameraOpenBtn.style.display = 'none';
+        })
+        .catch(error => {
+          console.error('Error accessing camera:', error);
+        });
+    }
+
+    // Call openRearCamera() when clicking on the "Take Photo" button
+    cameraOpenBtn.addEventListener('click', () => {
+      openRearCamera();
+    });
+
+    cameraUploadBtn.addEventListener('click', () => {
+      captureImage();
+    });
+
+    function captureImage() {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.width = cameraStream.videoWidth;
+      canvas.height = cameraStream.videoHeight;
+      context.drawImage(cameraStream, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL('image/png');
+      const uniqueFileName = generateUniqueFileName('image.png');
+      const file = dataURItoBlob(imageData, uniqueFileName);
+      uploadImage(file);
+    }
+
+    function dataURItoBlob(dataURI, fileName) {
+      const byteString = atob(dataURI.split(',')[1]);
+      const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      return new File([ab], fileName, { type: mimeString });
+    }
+
+    function generateUniqueFileName(originalFileName) {
+      const extension = originalFileName.split('.').pop();
+      const randomString = Math.random().toString(36).substring(2, 8);
+      const uniqueFileName = `image_${randomString}.${extension}`;
+      return uniqueFileName;
+    }
+
+    function uploadImage(file) {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      showLoadingIndicator();
+      alert("Working...");
+      fetch('http://localhost:2300/api/vision', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (response.ok) {
+          return handleResponseData(response);
+        } else {
+          throw new Error('Server error: ' + response.status);
+        }
+      })
+      .then(data => {
+        hideLoadingIndicator();
+        alert(data)
+        displayResponse(data);
+      })
+      .catch(error => {
+        hideLoadingIndicator();
+        alert(error)
+        console.error('Error uploading image:', error);
+      });
+    }
+
+    function handleResponseData(response) {
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        return response.json();
+      } else {
+        return response.text();
+      }
+    }
+
+    function showLoadingIndicator() {
+      loadingIndicator.style.display = 'flex';
+    }
+
+    function hideLoadingIndicator() {
+      loadingIndicator.style.display = 'none';
+    }
+
+    function displayResponse(response) {
+      const responseElement = document.createElement('div');
+      responseElement.innerHTML = `<pre>${response}</pre>`;
+      responseContainer.innerHTML = '';
+      responseContainer.appendChild(responseElement);
+    }
+  </script>
+</body>
+</html>
