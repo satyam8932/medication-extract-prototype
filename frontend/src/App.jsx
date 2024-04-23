@@ -91,7 +91,7 @@ function App() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Image Upload</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Process Medication</h2>
         <div className="mb-4 mx-auto flex justify-center">
           <button onClick={handleTakePicture} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
             Take a Picture
