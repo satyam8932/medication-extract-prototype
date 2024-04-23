@@ -13,14 +13,9 @@ dotenv.config();
 const app = express();
 
 // Enable CORS
-const allowedOrigins = ['https://medics-rosy.vercel.app'];
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+    callback(null, true); // Allow all origins
   }
 }));
 
