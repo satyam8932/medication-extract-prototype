@@ -63,30 +63,28 @@ function App() {
 
   const handleTakePicture = () => {
     setShowCamera(true);
-    const rearCameraConstraints = {
+    const constraints = {
       video: {
-        facingMode: { exact: "environment" } // Specify "environment" for rear camera
+        facingMode: 'environment' // Use the back camera if available
       }
     };
-
-    const anyCameraConstraints = { video: true };
-
-    navigator.mediaDevices.enumerateDevices()
-      .then(devices => {
-        const rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.toLowerCase().includes('back'));
-        const constraints = rearCamera ? rearCameraConstraints : anyCameraConstraints;
-
-        navigator.mediaDevices.getUserMedia(constraints)
-          .then((stream) => {
-            videoRef.current.srcObject = stream;
-          })
-          .catch((err) => {
-            console.error('Error accessing camera:', err);
-          });
+    try{
+      navigator.mediaDevices.getUserMedia(constraints)
+      .then((stream) => {
+        videoRef.current.srcObject = stream;
       })
       .catch((err) => {
-        console.error('Error enumerating devices:', err);
+        console.error('Error accessing camera:', err);
       });
+    } catch {
+      navigator.mediaDevices.getUserMedia(constraints)
+      .then((stream) => {
+        videoRef.current.srcObject = stream;
+      })
+      .catch((err) => {
+        console.error('Error accessing camera:', err);
+      });
+    }
   };
 
   return (
