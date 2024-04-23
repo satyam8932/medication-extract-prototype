@@ -14,10 +14,9 @@ const app = express();
 
 // Enable CORS
 app.use(cors({
-  origin: function (origin, callback) {
-    callback(null, true); // Allow all origins
-  }
-}));
+    origin: 'https://medics-rosy.vercel.app'
+  }));
+  
 
 app.use(express.json());
 

@@ -39,7 +39,8 @@ function App() {
       const response = await axios.post(`${apiURL}/api/vision`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
-        }
+        },
+        timeout: 300000,
       });
       setResponse(response.data);
     } catch (error) {
