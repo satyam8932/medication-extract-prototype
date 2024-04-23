@@ -1,2 +1,2 @@
-const apiURL = 'http://localhost:8000';
+const apiURL = 'https://meidcs-backend.vercel.app';
 export default apiURL;
