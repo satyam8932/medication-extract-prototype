@@ -90,7 +90,7 @@ function App() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-lg mx-auto bg-white rounded-lg shadow-lg p-8">
+      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg p-8"> {/* Changed max-w-lg to max-w-xl */}
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Process Medication</h2>
         <div className="mb-4 mx-auto flex justify-center">
           <button onClick={handleTakePicture} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
@@ -101,7 +101,7 @@ function App() {
           </button>
           <input type="file" accept="image/*" className="file-input file-input-bordered hidden" ref={fileInputRef} onChange={handleFileInputChange} />
         </div>
-
+  
         {showCamera && (
           <div className='mx-auto flex flex-col items-center'>
             <video ref={videoRef} autoPlay className="w-full h-auto mb-4"></video>
@@ -125,7 +125,7 @@ function App() {
         <canvas ref={canvasRef} className="hidden"></canvas>
       </div>
     </div>
-  );
+  );  
 }
 
 export default App;
