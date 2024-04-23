@@ -87,7 +87,7 @@ function App() {
       });
     }
   };
-
+  
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg p-8"> {/* Changed max-w-lg to max-w-xl */}
@@ -104,7 +104,7 @@ function App() {
   
         {showCamera && (
           <div className='mx-auto flex flex-col items-center'>
-            <video ref={videoRef} autoPlay className="w-full h-auto mb-4"></video>
+            <video ref={videoRef} autoPlay muted playsInline className="w-full h-auto mb-4"></video>
             <div className="flex">
               <button onClick={handleCaptureAndUpload} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-4">
                 Capture and Upload
