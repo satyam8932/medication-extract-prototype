@@ -2,7 +2,7 @@
   "name": "prototype",
   "version": "1.0.0",
   "description": "API endpoints for GPT4Vision",
-  "main": "index.js",
+  "main": "prod.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon prod.js"
