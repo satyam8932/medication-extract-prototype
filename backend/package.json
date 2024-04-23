@@ -4,8 +4,8 @@
   "description": "API endpoints for GPT4Vision",
   "main": "prod.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node prod.js"
+    "start": "node prod.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
